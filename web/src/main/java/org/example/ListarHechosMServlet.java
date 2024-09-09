@@ -1,6 +1,6 @@
-package org.example.Servlets;
+package org.example;
 
-import jakarta.inject.Inject;
+import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,22 +10,19 @@ import org.example.Services.InterfaceService.IHechoServiceLocal;
 import org.example.entity.Hecho;
 
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet("/buscar-hecho")
-public class BuscarHechoServlet extends HttpServlet {
+@WebServlet(name = "ListarHechosMServlet", value = "/listar-hechosM")
+public class ListarHechosMServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-    @Inject
+    @EJB
     private IHechoServiceLocal hechoService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idStr = request.getParameter("id");
-        Hecho hecho = null;
-        if (idStr != null) {
-            int id = Integer.parseInt(idStr);
-            hecho = hechoService.obtenerHechoPorId(id);
-        }
-        request.setAttribute("hecho", hecho);
-        request.getRequestDispatcher("/buscar-hecho.jsp").forward(request, response);
+        List<Hecho> hechos = hechoService.listarHechos();
+        request.setAttribute("hechos", hechos);
+        request.getRequestDispatcher("SelecionarHecho.jsp").forward(request, response);
     }
 }

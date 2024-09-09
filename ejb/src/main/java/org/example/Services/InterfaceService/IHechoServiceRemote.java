@@ -9,4 +9,6 @@ import java.util.List;
 public interface IHechoServiceRemote {
     Hecho obtenerHechoPorId(int id);
     List<Hecho> listarHechos();
+    List<Hecho> buscarHechos(String query);
+
 }

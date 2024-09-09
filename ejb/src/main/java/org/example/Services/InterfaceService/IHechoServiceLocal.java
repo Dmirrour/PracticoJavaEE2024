@@ -11,7 +11,10 @@ public interface IHechoServiceLocal {//Solo podran acceder quellos que esten den
     Hecho obtenerHechoPorId(int id);
     List<Hecho> listarHechos();
 
-    void modificarHecho(Hecho hecho);
+    Hecho modificarHecho(Hecho hecho);
 
     void eliminarHecho(int id);
+
+    List<Hecho> buscarHechos(String query);
+    void insertarCasosDePrueba();
 }

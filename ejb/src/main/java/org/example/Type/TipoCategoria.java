@@ -4,5 +4,7 @@ public enum TipoCategoria {
     POLITICA,
     MEDICINA,
     CIENCIA,
-    CELEBRIDADES
+    CELEBRIDADES,
+    ECONOMIA,
+    SOCIEDAD
 }

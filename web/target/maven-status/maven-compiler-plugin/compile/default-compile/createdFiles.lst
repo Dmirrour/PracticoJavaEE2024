@@ -1,9 +1,0 @@
-org\example\BuscarHechosServlet.class
-org\example\ListarHechosMServlet.class
-org\example\AgregarHechoServlet.class
-org\example\CargarModificarHechoServlet.class
-org\example\BuscarHechoServlet.class
-org\example\BorrarHechoServlet.class
-org\example\ListarHechosServlet.class
-org\example\ModificarHechoServlet.class
-org\example\InicializarCasosServlet.class

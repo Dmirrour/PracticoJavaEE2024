@@ -1,7 +1,0 @@
-org\example\Services\InterfaceService\IHechoServiceRemote.class
-org\example\Services\HechoServiceBean.class
-org\example\entity\Hecho.class
-org\example\Type\TipoCalificacion.class
-org\example\Type\TipoCategoria.class
-org\example\Repository\HechoRepository.class
-org\example\Services\InterfaceService\IHechoServiceLocal.class

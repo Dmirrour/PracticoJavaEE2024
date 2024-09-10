@@ -1,11 +1,11 @@
-# Usa la imagen base de WildFly
-FROM jboss/wildfly:latest
+# Usa la imagen base de WildFly de Bitnami
+FROM bitnami/wildfly:33.0.1
 
 # Copia el archivo .ear al contenedor en el directorio de despliegue de WildFly
-COPY ear/target/PracticoJavaEE2024.ear /opt/jboss/wildfly/standalone/deployments/
+COPY ear/target/PracticoJavaEE2024.ear /opt/bitnami/wildfly/standalone/deployments/
 
-# Expone los puertos en los que WildFly escucha
-#EXPOSE 8080 9990
+# Expone los puertos en los que WildFly escucha (8080 para la app, 9990 para el admin)
+EXPOSE 8080 9990
 
 # Comando para iniciar WildFly
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
+CMD ["/opt/bitnami/scripts/wildfly/entrypoint.sh", "/opt/bitnami/scripts/wildfly/run.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

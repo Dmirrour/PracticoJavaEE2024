@@ -19,6 +19,7 @@ public class InicializarCasosServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, IOException {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         hechoService.insertarCasosDePrueba();
         response.sendRedirect("index.jsp");
     }

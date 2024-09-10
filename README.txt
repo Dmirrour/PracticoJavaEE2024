@@ -64,3 +64,6 @@ docker build -t myapp-image .
 docker run -d -p 8080:8080 -p 9990:9990 myapp-image
 
 docker exec -it MiIDConteiner /opt/jboss/wildfly/bin/add-user.sh
+
+docker build -t test:1.0 .
+docker-compose up

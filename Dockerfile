@@ -1,11 +1,11 @@
-# Usar una imagen base de WildFly
+# Usa la imagen base de WildFly
 FROM jboss/wildfly:latest
 
-# Copiar el archivo EAR al contenedor
-COPY deploy/ear/*.ear /opt/jboss/wildfly/standalone/deployments/
+# Copia el archivo .ear al contenedor en el directorio de despliegue de WildFly
+COPY ear/target/PracticoJavaEE2024.ear /opt/jboss/wildfly/standalone/deployments/
 
-# Exponer el puerto de la aplicación
-EXPOSE 8080
+# Expone los puertos en los que WildFly escucha
+EXPOSE 8080 9990
 
 # Comando para iniciar WildFly
 CMD ["jboss-cli.sh", "--connect", "--file=/opt/jboss/wildfly/standalone/configuration/standalone.xml"]

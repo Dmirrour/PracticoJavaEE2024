@@ -21,10 +21,12 @@
     <a href="buscar-hecho.jsp"><button>Buscar Hecho ID</button></a>
     <a href="listar-hechosM"><button>Modificar y Borrar</button></a>
     <a href="buscar-hechos.jsp"><button>Buscar Hechos</button></a>
-    <br>
+    <br><br>
     <form action="inicializarCasos" method="post">
         <button type="submit">Inicializar Casos de Prueba</button>
     </form>
+    <br><br>
+    <a href="jsf/Hechos.xhtml"><button>Parte 4 JSF</button></a>
 </div>
 </body>
 </html>

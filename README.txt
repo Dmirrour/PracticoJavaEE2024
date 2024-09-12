@@ -57,3 +57,13 @@ The goal "verify" (which triggers the maven-surefire-plugin) is executed later i
 artifacts ("PracticoJavaEE2024-ejb.jar" and "PracticoJavaEE2024-web.war") are already built. You can build
 the final EAR by including those files. The "maven-surefire-plugin" is executed before the JAR/WAR files
 are created, so those JAR/WAR files would have to be built in the "@Deployment" method, too.
+
+
+docker build -t myapp-image .
+
+docker run -d -p 8080:8080 -p 9990:9990 myapp-image
+
+docker exec -it MiIDConteiner /opt/jboss/wildfly/bin/add-user.sh
+
+docker build -t test:1.0 .
+docker-compose up

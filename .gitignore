@@ -1,6 +1,6 @@
-target/
+
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
+
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
@@ -38,3 +38,11 @@ build/
 .DS_Store
 /.idea
 .idea/misc.xml
+/ear/target/PracticoJavaEE2024/
+/ejb/target/
+/web/target/
+/ear/target/PracticoJavaEE2024/META-INF
+web/target/PracticoJavaEE2024-web/index.jsp
+web/target/PracticoJavaEE2024-web/META-INF/MANIFEST.MF
+web/target/PracticoJavaEE2024-web/WEB-INF/classes/org/example/CargarModificarHechoServlet.class
+ejb/target/PracticoJavaEE2024-ejb/META-INF/MANIFEST.MF

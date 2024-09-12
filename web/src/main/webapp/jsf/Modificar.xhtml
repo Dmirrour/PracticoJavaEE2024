@@ -66,7 +66,7 @@
         <p:calendar id="fechaValidacion" value="#{hechoBean.hecho.fechaVerificacion}" pattern="dd/MM/yyyy" showOn="button" />
         <br/><br/>
         <p:outputLabel for="fechaCreacion" value="Fecha de Creación:" />
-        <p:inputText id="fechaCreacion" value="#{hechoBean.hecho.fechaCreacion}" readonly="true" />
+        <p:inputText id="fechaCreacion" value="#{hechoBean.formatearFecha(hechoBean.hecho.fechaCreacion)}" readonly="true" />
         <br/><br/>
 
         <p:commandButton value="Guardar Cambios" action="#{hechoBean.modificarHecho}" update="growl"

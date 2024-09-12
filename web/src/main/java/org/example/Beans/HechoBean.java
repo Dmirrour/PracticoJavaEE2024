@@ -13,6 +13,8 @@ import org.example.Services.InterfaceService.IHechoServiceLocal;
 import org.example.entity.Hecho;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -28,6 +30,7 @@ public class HechoBean implements Serializable {
     private List<Hecho> hechosFiltrados;
     private String query;
     private Hecho hecho;
+    private int idHechoSeleccionado;
 
     @PostConstruct
     public void init() {
@@ -76,9 +79,9 @@ public class HechoBean implements Serializable {
             return null;
         }
     }
-    public void borrarHecho(int idHecho){
+    public void borrarHecho(){
         try {
-            hechoService.eliminarHecho(idHecho);
+            hechoService.eliminarHecho(idHechoSeleccionado);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Success", "Se a borrado con exito."));
             init();
@@ -89,5 +92,11 @@ public class HechoBean implements Serializable {
             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo Borrar el hecho."));
         }
     }
-
+    public String formatearFecha(LocalDateTime fecha) {
+        if (fecha != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return fecha.format(formatter);
+        }
+        return "";
+    }
 }

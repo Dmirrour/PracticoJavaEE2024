@@ -23,15 +23,12 @@ public class CargarModificarHechoServlet extends HttpServlet {
         System.out.println(a);
         int idHecho = Integer.parseInt(request.getParameter("idHecho"));
 
-        // Buscar el hecho por ID
         Hecho hecho = hechoService.obtenerHechoPorId(idHecho);
         if (hecho != null) {
-            // Enviar el hecho a la vista de modificación
             request.setAttribute("hecho", hecho);
             RequestDispatcher dispatcher = request.getRequestDispatcher("modificar-hecho.jsp");
             dispatcher.forward(request, response);
         } else {
-            // Manejar error si no se encuentra el hecho
             response.sendRedirect("error.jsp");
         }
     }

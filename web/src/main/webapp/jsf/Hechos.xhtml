@@ -6,15 +6,25 @@
 >
 <h:head>
     <title>Listar Hechos</title>
+
 </h:head>
 <h:body>
+    <p:messages id="messages" autoUpdate="true" />
     <h:form id="formHechos">
-        <p:panel header="Buscar Hechos">
-            <p:inputText value="#{hechoBean.query}" placeholder="Buscar..." style="width:200px">
-                <p:ajax event="keyup" listener="#{hechoBean.buscarHechos}" update="listaHechos" delay="300" />
-            </p:inputText>
-            <p:commandButton value="Buscar" action="#{hechoBean.buscarHechos}" update="listaHechos" ajax="true" />
-        </p:panel>
+        <p:panelGrid columns="2" style="width: 100%; margin-bottom: 20px;">
+
+            <p:commandButton value="Agregar Hecho"
+                             action="AltaHecho"
+                             styleClass="btn btn-primary"
+                             update=":formHechos" />
+
+            <p:panel header="Buscar Hechos" styleClass="search-panel">
+                <p:inputText value="#{hechoBean.query}" placeholder="Buscar..." styleClass="form-control">
+                    <p:ajax event="keyup" listener="#{hechoBean.buscarHechos}" update="listaHechos" delay="300" />
+                </p:inputText>
+                <p:commandButton value="Buscar" action="#{hechoBean.buscarHechos}" update="listaHechos" ajax="true" />
+            </p:panel>
+        </p:panelGrid>
 
         <p:dataTable id="listaHechos" value="#{hechoBean.hechosFiltrados}" var="hecho" paginator="true" rows="10" styleClass="table">
             <p:column headerText="ID">
@@ -41,7 +51,11 @@
             <p:column headerText="Publicado">
                 <h:outputText value="#{hecho.publicado}" />
             </p:column>
-            <!-- Agrega más columnas según sea necesario -->
+            <p:column headerText="Acciones">
+                <p:commandButton value="Modificar" action="#{hechoBean.selecionarHecho(hecho.idHecho)}"/>
+                <p:commandButton value="Borrar" action="#{hechoBean.borrarHecho(hecho.idHecho)}" update="listaHechos" />
+
+            </p:column>
         </p:dataTable>
     </h:form>
 </h:body>

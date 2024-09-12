@@ -1,9 +1,13 @@
-package org.example;
+package org.example.Beans;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.faces.view.ViewScoped;
+import jakarta.servlet.RequestDispatcher;
 import lombok.Data;
 import org.example.Services.InterfaceService.IHechoServiceLocal;
 import org.example.entity.Hecho;
@@ -13,7 +17,7 @@ import java.util.List;
 
 @Data
 @Named
-@ViewScoped
+@SessionScoped
 public class HechoBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,10 +27,21 @@ public class HechoBean implements Serializable {
 
     private List<Hecho> hechosFiltrados;
     private String query;
+    private Hecho hecho;
 
     @PostConstruct
     public void init() {
         hechosFiltrados = hechoService.listarHechos();
+        hecho = new Hecho();
+    }
+
+    public String altaHecho(){
+        hechoService.agregarHecho(hecho);
+        init();
+        return "Hechos?faces-redirect=true";
+    }
+    public void resetHecho() {
+        hecho = new Hecho();
     }
 
     public void buscarHechos() {
@@ -36,4 +51,43 @@ public class HechoBean implements Serializable {
             hechosFiltrados = hechoService.buscarHechos(query);
         }
     }
+
+    public String selecionarHecho(int idHecho) {
+        hecho = hechoService.obtenerHechoPorId(idHecho);
+
+        if (hecho == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El hecho no se encontró"));
+            return null;
+        }
+        return "Modificar?faces-redirect=true";
+    }
+
+    public String modificarHecho() {
+        Hecho hechoModificado = hechoService.modificarHecho(hecho);
+
+        if (hechoModificado != null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "El hecho fue modificado correctamente."));
+            init();
+            return "Hechos?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo modificar el hecho."));
+            return null;
+        }
+    }
+    public void borrarHecho(int idHecho){
+        try {
+            hechoService.eliminarHecho(idHecho);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Success", "Se a borrado con exito."));
+            init();
+
+        }
+        catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo Borrar el hecho."));
+        }
+    }
+
 }

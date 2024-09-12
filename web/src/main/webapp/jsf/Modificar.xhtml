@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Modificar Hecho</title>
+
+    <h:outputScript>
+        function redirect() {
+            setTimeout(function() {
+                window.location.href = 'Hechos.xhtml';
+            }, 4000);
+        }
+    </h:outputScript>
+</h:head>
+<h:body>
+    <h:form id="formModificar">
+        <h1>Modificar Hecho</h1>
+        <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+        <h:inputHidden value="#{hechoBean.hecho.idHecho}" />
+
+        <!-- Estado -->
+        <p:outputLabel for="estado" value="Estado:" />
+        <p:inputText id="estado" value="#{hechoBean.hecho.estado}" required="true" />
+        <br/><br/>
+
+        <!-- Descripción -->
+        <p:outputLabel for="descripcion" value="Descripción:" />
+        <p:inputText id="descripcion" value="#{hechoBean.hecho.descripcion}" />
+        <br/><br/>
+
+        <!-- Calificación -->
+        <p:outputLabel for="calificacion" value="Calificación:" />
+        <p:selectOneMenu id="calificacion" value="#{hechoBean.hecho.calificacion}">
+            <f:selectItem itemValue="FALSA" itemLabel="Falsa" />
+            <f:selectItem itemValue="VERDADERA" itemLabel="Verdadera" />
+            <f:selectItem itemValue="VERDAD_A_MEDIAS" itemLabel="Verdad a Medias" />
+            <f:selectItem itemValue="INFLADO" itemLabel="Inflado" />
+            <f:selectItem itemValue="ENGANOSO" itemLabel="Engañoso" />
+            <f:selectItem itemValue="RIDICULO" itemLabel="Ridículo" />
+        </p:selectOneMenu>
+        <br/><br/>
+
+        <p:outputLabel for="areaTematica" value="Área Temática:" />
+        <p:selectOneMenu id="areaTematica" value="#{hechoBean.hecho.areaTematica}">
+            <f:selectItem itemValue="POLITICA" itemLabel="Política" />
+            <f:selectItem itemValue="MEDICINA" itemLabel="Medicina" />
+            <f:selectItem itemValue="CIENCIA" itemLabel="Ciencia" />
+            <f:selectItem itemValue="CELEBRIDADES" itemLabel="Celebridades" />
+            <f:selectItem itemValue="ECONOMIA" itemLabel="Economía" />
+            <f:selectItem itemValue="SOCIEDAD" itemLabel="Sociedad" />
+        </p:selectOneMenu>
+        <br/><br/>
+
+        <p:outputLabel for="justificacion" value="Justificación:" />
+        <p:inputTextarea id="justificacion" value="#{hechoBean.hecho.justificacion}" />
+        <br/><br/>
+
+        <p:outputLabel for="publicado" value="Publicado:" />
+        <p:selectBooleanCheckbox id="publicado" value="#{hechoBean.hecho.publicado}" />
+        <br/><br/>
+
+        <p:outputLabel for="fechaValidacion" value="Fecha de Validación:" />
+        <p:calendar id="fechaValidacion" value="#{hechoBean.hecho.fechaVerificacion}" pattern="dd/MM/yyyy" showOn="button" />
+        <br/><br/>
+        <p:outputLabel for="fechaCreacion" value="Fecha de Creación:" />
+        <p:inputText id="fechaCreacion" value="#{hechoBean.hecho.fechaCreacion}" readonly="true" />
+        <br/><br/>
+
+        <p:commandButton value="Guardar Cambios" action="#{hechoBean.modificarHecho}" update="growl"
+                         oncomplete="if(!args.validationFailed){redirect();}" />
+    </h:form>
+</h:body>
+</html>

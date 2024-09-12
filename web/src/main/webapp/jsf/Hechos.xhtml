@@ -14,10 +14,12 @@
     <h:form id="formHechos">
         <p:panelGrid columns="2" style="width: 100%; margin-bottom: 20px;">
 
-            <p:commandButton value="Agregar Hecho"
-                             action="AltaHecho"
-                             styleClass="btn btn-primary"
-                             update=":formHechos" />
+            <a href="AltaHecho.xhtml" class="btn btn-primary">
+                <button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+                    <span class="ui-button-text ui-c">Agregar Hecho</span>
+                </button>
+            </a>
+
 
             <p:panel header="Buscar Hechos" styleClass="search-panel">
                 <p:inputText value="#{hechoBean.query}" placeholder="Buscar..." styleClass="form-control">

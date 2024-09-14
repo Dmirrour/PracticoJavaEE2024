@@ -1,7 +1,6 @@
 package org.example.Console;
 
 import jakarta.ejb.EJB;
-import org.example.Services.InterfaceService.IHechoServiceLocal;
 import org.example.Services.InterfaceService.IHechoServiceRemote;
 import org.example.Type.*;
 import org.example.entity.Hecho;
@@ -20,21 +19,42 @@ public class HechoConsoleApp {
 
     public HechoConsoleApp() {
         try {
-            // Configurar el contexto inicial para hacer la búsqueda del EJB
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Seleccione el tipo de conexión:");
+            System.out.println("1. Conectar al servidor WildFly Local");
+            System.out.println("2. Conectar al servidor desplegado en Railway");
+            int opcion = scanner.nextInt();
+
             Properties props = new Properties();
             props.put(Context.INITIAL_CONTEXT_FACTORY, "org.wildfly.naming.client.WildFlyInitialContextFactory");
             props.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-            props.put(Context.PROVIDER_URL, "remote+http://localhost:8080");
+
+            switch (opcion) {
+                case 1:
+                    System.out.println("Conectándose al servidor local...");
+                    props.put(Context.PROVIDER_URL, "http-remoting://localhost:8080");
+                    break;
+                case 2:
+                    System.out.println("Conectándose al servidor desplegado en Railway...");
+                    props.put(Context.PROVIDER_URL, "http-remoting://practicojavaee2024-production.up.railway.app:8080");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Conectándose al servidor local por defecto.");
+                    props.put(Context.PROVIDER_URL, "http-remoting://localhost:8080");
+                    break;
+            }
+
             Context ctx = new InitialContext(props);
 
             System.out.println("Iniciando el contexto JNDI...");
-            String jndiName = "java:global/PracticoJavaEE2024-ejb/HechoServiceBean!org.example.Services.InterfaceService.IHechoServiceRemote";
+            String jndiName = "ejb:PracticoJavaEE2024/PracticoJavaEE2024-ejb/HechoServiceBean!org.example.Services.InterfaceService.IHechoServiceRemote";
+            //No puede hacer andar esto afuera del modulo ejb
+            //sacandolo de aca de la intalacion local nunca me encontrava el jndiName
+            //Error al realizar la búsqueda del EJB: EJBCLIENT000062: Failed to look up "PracticoJavaEE2024/PracticoJavaEE2024-ejb/HechoServiceBean!org.example.Services.InterfaceService.IHechoServiceRemote"
 
-            // Realizar la búsqueda del EJB por JNDI
             System.out.println("Buscando el EJB HechoService...");
             hechoService = (IHechoServiceRemote) ctx.lookup(jndiName);
 
-            // Verificar si la conexión fue exitosa
             if (hechoService != null) {
                 System.out.println("Conexión exitosa al servicio HechoService.");
             } else {
@@ -46,6 +66,7 @@ public class HechoConsoleApp {
             e.printStackTrace();
         }
     }
+
 
 
     private static Scanner scanner = new Scanner(System.in);
@@ -66,11 +87,11 @@ public class HechoConsoleApp {
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer
+            scanner.nextLine();
 
             switch (option) {
                 case 1:
-                    //agregarHecho();
+                    agregarHecho();
                     break;
                 case 2:
                     listarHechos();
@@ -78,12 +99,12 @@ public class HechoConsoleApp {
                 case 3:
                     buscarHecho();
                     break;
-                case 4:
+              /*  case 4:
                     //modificarHecho();
                     break;
                 case 5:
                     //eliminarHecho();
-                    break;
+                    break;*/ //Estas intefases se puede usar solo con Local por como esta configurada pero para el deploy no me sirve local
                 case 0:
                     System.out.println("Saliendo...");
                     break;
@@ -93,7 +114,7 @@ public class HechoConsoleApp {
         } while (option != 0);
     }
 
-/*    private void agregarHecho() {
+    private void agregarHecho() {
         System.out.println("\n--- Agregar Hecho ---");
         System.out.print("Descripción: ");
         String descripcion = scanner.nextLine();
@@ -101,7 +122,6 @@ public class HechoConsoleApp {
         System.out.print("Estado: ");
         String estado = scanner.nextLine();
 
-        // Suponemos que los tipos de calificación y categoría son seleccionados por números
         System.out.println("Seleccione una calificación: ");
         for (int i = 0; i < TipoCalificacion.values().length; i++) {
             System.out.println(i + 1 + ". " + TipoCalificacion.values()[i]);
@@ -121,7 +141,8 @@ public class HechoConsoleApp {
 
         hechoService.agregarHecho(nuevoHecho);
         System.out.println("Hecho agregado exitosamente.");
-    }*/
+    }
+
 
     private void listarHechos() {
         System.out.println("\n--- Listar Hechos ---");
@@ -147,7 +168,7 @@ public class HechoConsoleApp {
 /*    private void modificarHecho() {
         System.out.print("\nIngrese el ID del hecho a modificar: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        scanner.nextLine();
         Hecho hecho = hechoService.obtenerHechoPorId(id);
         if (hecho == null) {
             System.out.println("Hecho no encontrado.");
@@ -169,7 +190,7 @@ public class HechoConsoleApp {
     private void eliminarHecho() {
         System.out.print("\nIngrese el ID del hecho a eliminar: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
+        scanner.nextLine();
 
         hechoService.eliminarHecho(id);
         System.out.println("Hecho eliminado exitosamente.");

@@ -127,7 +127,24 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-naming-client</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-ejb-client-bom</artifactId>
+            <version>25.0.0.Final</version> <!-- Usa la versión de tu WildFly -->
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jboss-client</artifactId>
+            <version>4.0.2</version>
+        </dependency>
 
 
 

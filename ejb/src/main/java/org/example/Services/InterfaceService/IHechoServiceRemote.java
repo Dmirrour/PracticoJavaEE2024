@@ -10,5 +10,6 @@ public interface IHechoServiceRemote {
     Hecho obtenerHechoPorId(int id);
     List<Hecho> listarHechos();
     List<Hecho> buscarHechos(String query);
+    void agregarHecho(Hecho hecho);
 
 }

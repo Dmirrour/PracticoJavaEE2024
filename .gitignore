@@ -46,3 +46,4 @@ web/target/PracticoJavaEE2024-web/index.jsp
 web/target/PracticoJavaEE2024-web/META-INF/MANIFEST.MF
 web/target/PracticoJavaEE2024-web/WEB-INF/classes/org/example/CargarModificarHechoServlet.class
 ejb/target/PracticoJavaEE2024-ejb/META-INF/MANIFEST.MF
+/lib/

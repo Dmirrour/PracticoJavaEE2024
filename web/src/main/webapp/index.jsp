@@ -25,6 +25,7 @@
     <form action="inicializarCasos" method="post">
         <button type="submit">Inicializar Casos de Prueba</button>
     </form>
+
     <br><br>
     <a href="jsf/Hechos.xhtml"><button>Parte 4 JSF</button></a>
 </div>

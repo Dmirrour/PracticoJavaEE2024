@@ -1,21 +1,26 @@
 package org.example;
 
 import jakarta.ejb.EJB;
+
 import org.example.Services.InterfaceService.IHechoServiceRemote;
 import org.example.Type.*;
 import org.example.entity.Hecho;
 
+
+import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class Main {
 
-    //@EJB
     private IHechoServiceRemote hechoService;
 
     public Main() {
@@ -49,9 +54,6 @@ public class Main {
 
             System.out.println("Iniciando el contexto JNDI...");
             String jndiName = "ejb:PracticoJavaEE2024/PracticoJavaEE2024-ejb/HechoServiceBean!org.example.Services.InterfaceService.IHechoServiceRemote";
-            //No puede hacer andar esto afuera del modulo ejb
-            //sacandolo de aca de la intalacion local nunca me encontrava el jndiName
-            //Error al realizar la búsqueda del EJB: EJBCLIENT000062: Failed to look up "PracticoJavaEE2024/PracticoJavaEE2024-ejb/HechoServiceBean!org.example.Services.InterfaceService.IHechoServiceRemote"
 
             System.out.println("Buscando el EJB HechoService...");
             hechoService = (IHechoServiceRemote) ctx.lookup(jndiName);
@@ -68,9 +70,8 @@ public class Main {
         }
     }
 
-
-
     private static Scanner scanner = new Scanner(System.in);
+    private static final Logger log = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         new Main().start();
@@ -80,11 +81,10 @@ public class Main {
         int option;
         do {
             System.out.println("\nGestor de Hechos:");
-            System.out.println("1. Agregar Hecho");
-            System.out.println("2. Listar Hechos");
-            System.out.println("3. Buscar Hecho");
-            System.out.println("4. Modificar Hecho");
-            System.out.println("5. Eliminar Hecho");
+            System.out.println("1. Agregar Hecho (EJB)");
+            System.out.println("2. Agregar Hecho (JMS)");
+            System.out.println("3. Listar Hechos");
+            System.out.println("4. Buscar Hecho");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
@@ -92,20 +92,17 @@ public class Main {
 
             switch (option) {
                 case 1:
-                    agregarHecho();
+                    agregarHechoEJB();
                     break;
                 case 2:
-                    listarHechos();
+                    agregarHechoJMS();
                     break;
                 case 3:
+                    listarHechos();
+                    break;
+                case 4:
                     buscarHecho();
                     break;
-              /*  case 4:
-                    //modificarHecho();
-                    break;
-                case 5:
-                    //eliminarHecho();
-                    break;*/ //Estas intefases se puede usar solo con Local por como esta configurada pero para el deploy no me sirve local
                 case 0:
                     System.out.println("Saliendo...");
                     break;
@@ -115,8 +112,78 @@ public class Main {
         } while (option != 0);
     }
 
-    private void agregarHecho() {
-        System.out.println("\n--- Agregar Hecho ---");
+    private void agregarHechoEJB() {
+        System.out.println("\n--- Agregar Hecho (EJB) ---");
+        Hecho nuevoHecho = crearHechoDesdeConsola();
+        hechoService.agregarHecho(nuevoHecho);
+        System.out.println("Hecho agregado exitosamente.");
+    }
+    private static final String DEFAULT_USERNAME = "admin"; // Cambia esto por tu valor predeterminado
+    private static final String DEFAULT_PASSWORD = "admin"; // Cambia esto por tu valor predeterminado
+    private static final String INITIAL_CONTEXT_FACTORY = "org.wildfly.naming.client.WildFlyInitialContextFactory"; // Asegúrate de que sea correcto
+    private static final String PROVIDER_URL = "http-remoting://localhost:8080"; // Cambia según tu configuración
+    private static final String DEFAULT_CONNECTION_FACTORY = "jms/RemoteConnectionFactory";
+    private static final String DEFAULT_DESTINATION = "java:/queue/HechoMDB"; // Cambia según tu configuraciónjava:/queue/HechoMDB
+    private static final String DEFAULT_MESSAGE_COUNT = "10"; // Número de mensajes a enviar
+    private static final String DEFAULT_MESSAGE = "Mensaje de prueba"; // Contenido del mensaje
+    private void agregarHechoJMS() {
+        System.out.println("\n--- Agregar Hecho (JMS) ---");
+
+        try {
+            String userName = System.getProperty("username", DEFAULT_USERNAME);
+            String password = System.getProperty("password", DEFAULT_PASSWORD);
+
+            // Configurar el contexto para la búsqueda JNDI
+            final Properties env = new Properties();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
+            env.put(Context.PROVIDER_URL, System.getProperty(Context.PROVIDER_URL, PROVIDER_URL));
+            env.put(Context.SECURITY_PRINCIPAL, userName);
+            env.put(Context.SECURITY_CREDENTIALS, password);
+            Context namingContext = new InitialContext(env);
+
+            // Realizar búsquedas JNDI
+            String connectionFactoryString = System.getProperty("connection.factory", DEFAULT_CONNECTION_FACTORY);
+            System.out.println("Intentando adquirir la fábrica de conexiones \"" + connectionFactoryString + "\"");
+            ConnectionFactory connectionFactory = (ConnectionFactory) namingContext.lookup(connectionFactoryString);
+            System.out.println("Fábrica de conexiones encontrada: \"" + connectionFactoryString + "\" en JNDI");
+            Queue queue = (Queue) namingContext.lookup("queue/HechoMDB");
+
+            String destinationString = System.getProperty("destination", DEFAULT_DESTINATION);
+            System.out.println("Intentando adquirir la cola/destino \"" + destinationString + "\"");
+            Destination destination = (Destination) namingContext.lookup(destinationString);
+            System.out.println("Destino encontrado: \"" + destinationString + "\" en JNDI");
+
+            int count = Integer.parseInt(System.getProperty("message.count", DEFAULT_MESSAGE_COUNT));
+            String content = System.getProperty("message.content", DEFAULT_MESSAGE);
+
+            // Enviar y recibir mensajes
+            try (JMSContext context = connectionFactory.createContext(userName, password)) {
+                System.out.println("Enviando " + count + " mensajes con contenido: " + content);
+                // Enviar el número especificado de mensajes
+                for (int i = 0; i < count; i++) {
+                    context.createProducer().send(destination, content);
+                }
+
+                // Crear el consumidor JMS
+                JMSConsumer consumer = context.createConsumer(destination);
+                // Recibir el mismo número de mensajes que se enviaron
+                for (int i = 0; i < count; i++) {
+                    String text = consumer.receiveBody(String.class, 5000);
+                    System.out.println("Mensaje recibido con contenido: " + text);
+                }
+            }
+        } catch (NamingException e) {
+            System.err.println("Error de JNDI: " + e.getMessage());
+            System.out.println(e);
+        } catch (NumberFormatException e) {
+            System.err.println("Error de formato de número: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+        }
+    }
+
+
+    private Hecho crearHechoDesdeConsola() {
         System.out.print("Descripción: ");
         String descripcion = scanner.nextLine();
 
@@ -137,13 +204,9 @@ public class Main {
         int categoriaIndex = scanner.nextInt() - 1;
         scanner.nextLine();
 
-        Hecho nuevoHecho = new Hecho(0, estado, descripcion, TipoCalificacion.values()[calificacionIndex], TipoCategoria.values()[categoriaIndex],
+        return new Hecho(0, estado, descripcion, TipoCalificacion.values()[calificacionIndex], TipoCategoria.values()[categoriaIndex],
                 LocalDateTime.now(), LocalDateTime.now(), "Sin justificación", false);
-
-        hechoService.agregarHecho(nuevoHecho);
-        System.out.println("Hecho agregado exitosamente.");
     }
-
 
     private void listarHechos() {
         System.out.println("\n--- Listar Hechos ---");
@@ -165,35 +228,4 @@ public class Main {
             }
         }
     }
-
-/*    private void modificarHecho() {
-        System.out.print("\nIngrese el ID del hecho a modificar: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        Hecho hecho = hechoService.obtenerHechoPorId(id);
-        if (hecho == null) {
-            System.out.println("Hecho no encontrado.");
-            return;
-        }
-
-        System.out.print("Nueva Descripción (" + hecho.getDescripcion() + "): ");
-        String descripcion = scanner.nextLine();
-        hecho.setDescripcion(descripcion.isEmpty() ? hecho.getDescripcion() : descripcion);
-
-        System.out.print("Nuevo Estado (" + hecho.getEstado() + "): ");
-        String estado = scanner.nextLine();
-        hecho.setEstado(estado.isEmpty() ? hecho.getEstado() : estado);
-
-        hechoService.modificarHecho(hecho);
-        System.out.println("Hecho modificado exitosamente.");
-    }
-
-    private void eliminarHecho() {
-        System.out.print("\nIngrese el ID del hecho a eliminar: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-
-        hechoService.eliminarHecho(id);
-        System.out.println("Hecho eliminado exitosamente.");
-    }*/
 }

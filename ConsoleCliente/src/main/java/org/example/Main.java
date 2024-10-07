@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    @EJB
+    //@EJB
     private IHechoServiceRemote hechoService;
 
     public Main() {

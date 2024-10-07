@@ -27,9 +27,7 @@
     <packaging>pom</packaging>
     <name>PracticoJavaEE2024 - ear</name>
     <description>This is the EAR POM file</description>
-    <modules>
-        <module>ConsoleCliente</module>
-    </modules>
+
 
     <dependencies>
         <dependency>

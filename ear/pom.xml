@@ -24,7 +24,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>PracticoJavaEE2024-ear</artifactId>
-    <packaging>pom</packaging>
+    <packaging>ear</packaging>
     <name>PracticoJavaEE2024 - ear</name>
     <description>This is the EAR POM file</description>
 

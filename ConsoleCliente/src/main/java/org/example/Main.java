@@ -156,17 +156,15 @@ public class Main {
             int count = Integer.parseInt(System.getProperty("message.count", DEFAULT_MESSAGE_COUNT));
             String content = System.getProperty("message.content", DEFAULT_MESSAGE);
 
-            // Enviar y recibir mensajes
+
             try (JMSContext context = connectionFactory.createContext(userName, password)) {
                 System.out.println("Enviando " + count + " mensajes con contenido: " + content);
-                // Enviar el número especificado de mensajes
+
                 for (int i = 0; i < count; i++) {
                     context.createProducer().send(destination, content);
                 }
 
-                // Crear el consumidor JMS
                 JMSConsumer consumer = context.createConsumer(destination);
-                // Recibir el mismo número de mensajes que se enviaron
                 for (int i = 0; i < count; i++) {
                     String text = consumer.receiveBody(String.class, 5000);
                     System.out.println("Mensaje recibido con contenido: " + text);

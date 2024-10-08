@@ -4,6 +4,9 @@ import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import jakarta.ejb.Lock;
 import jakarta.ejb.LockType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.example.Type.TipoCalificacion;
 import org.example.Type.TipoCategoria;
 import org.example.entity.Hecho;
@@ -19,7 +22,65 @@ import java.util.stream.Collectors;
 @Lock(LockType.READ)
 public class HechoRepository {
 
-    private final List<Hecho> hechos = new ArrayList<>();
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public void agregarHecho(Hecho hecho) {
+        entityManager.persist(hecho);
+    }
+
+    public Hecho obtenerHechoPorId(int id) {
+        return entityManager.find(Hecho.class, id);
+    }
+
+    public List<Hecho> listarHechos() {
+        return entityManager.createQuery("SELECT h FROM Hecho h", Hecho.class).getResultList();
+    }
+
+    public Hecho modificarHecho(Hecho hechoModificado) {
+        return entityManager.merge(hechoModificado);
+    }
+
+    public void eliminarHecho(int id) {
+        Hecho hecho = obtenerHechoPorId(id);
+        if (hecho != null) {
+            entityManager.remove(hecho);
+        }
+    }
+
+    public List<Hecho> buscarHechos(String query) {
+        String jpql = "SELECT h FROM Hecho h WHERE "
+                + "LOWER(h.descripcion) LIKE :query OR "
+                + "LOWER(h.justificacion) LIKE :query OR "
+                + "CAST(h.idHecho AS string) LIKE :query OR "
+                + "LOWER(h.estado) LIKE :query OR "
+                + "CAST(h.calificacion AS string ) LIKE :query OR "
+                + "CAST(h.areaTematica AS string ) LIKE :query";
+        TypedQuery<Hecho> typedQuery = entityManager.createQuery(jpql, Hecho.class)
+                .setParameter("query", "%" + query.toLowerCase() + "%");
+        return typedQuery.getResultList();
+    }
+
+    public void insertarCasosDePrueba() {
+        if (contarHechos() == 0) {
+            agregarHecho(new Hecho(0, "Activo", "Se decreto Feriado Nacional este Lunes",
+                    TipoCalificacion.FALSA, TipoCategoria.POLITICA,
+                    LocalDateTime.now(), LocalDateTime.now(), "Justificación 1", true));
+            agregarHecho(new Hecho(0, "Inactivo", "Según una encuesta la mayoría de personas prefieren la pizza con piña",
+                    TipoCalificacion.INFLADO, TipoCategoria.SOCIEDAD,
+                    LocalDateTime.now(), LocalDateTime.now(), "Justificación 2", false));
+            agregarHecho(new Hecho(0, "En Espera", "El Dólar baja un 2%",
+                    TipoCalificacion.ENGANOSO, TipoCategoria.ECONOMIA,
+                    LocalDateTime.now(), LocalDateTime.now(), "Justificación 3", true));
+        }
+    }
+
+    public long contarHechos() {
+        return entityManager.createQuery("SELECT COUNT(h) FROM Hecho h", Long.class).getSingleResult();
+    }
+
+//Practico 1 ----------------------------------------------------
+    /*private final List<Hecho> hechos = new ArrayList<>();
     private int ultimoId = 0;
 
     @Lock(LockType.WRITE)
@@ -78,6 +139,6 @@ public class HechoRepository {
             hechos.add(new Hecho(++ultimoId,"Inactivo", "Segun una encuesta la mayoria de personas prefieren la pizza con piña "+(ultimoId), TipoCalificacion.INFLADO, TipoCategoria.SOCIEDAD, LocalDateTime.now(), LocalDateTime.now(), "Justificación "+ (ultimoId), false));
             hechos.add(new Hecho(++ultimoId,"En Espera", "El Dolar baja una 2% "+(ultimoId), TipoCalificacion.ENGANOSO, TipoCategoria.ECONOMIA, LocalDateTime.now(), LocalDateTime.now(), "Justificación "+ (ultimoId), true));
         }
-    }
+    }*/
 
 }

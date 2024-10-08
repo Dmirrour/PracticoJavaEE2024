@@ -1,5 +1,10 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.example.Type.TipoCalificacion;
 import org.example.Type.TipoCategoria;
@@ -9,11 +14,18 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@Entity
 public class Hecho implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idHecho;
     private String descripcion;
     private String estado;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
     private LocalDateTime fechaCreacion;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
     private LocalDateTime fechaVerificacion;
     private String justificacion;
     private TipoCalificacion calificacion;

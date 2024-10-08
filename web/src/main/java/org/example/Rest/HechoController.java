@@ -36,9 +36,11 @@ public class HechoController {
         hecho.setFechaVerificacion(newHecho.getFechaVerificacion());
         hecho.setCalificacion(newHecho.getCalificacion());
         hecho.setPublicado(newHecho.isPublicado());
+        hecho.setDescripcion(newHecho.getDescripcion());
+        hecho.setJustificacion(newHecho.getJustificacion());
 
         hechoServiceRemote.agregarHecho(hecho);
-        return Response.status(Response.Status.CREATED).entity(hecho).build();
+        return Response.status(Response.Status.CREATED).entity(newHecho).build();
     }
 
     @GET

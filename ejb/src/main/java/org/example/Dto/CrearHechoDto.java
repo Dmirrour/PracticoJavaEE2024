@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.example.Helper.LocalDateTimeAdapter;
 import org.example.Type.TipoCalificacion;
 import org.example.Type.TipoCategoria;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class CrearHechoDto implements Serializable {
     private String descripcion;
     private String estado;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime fechaVerificacion;
 

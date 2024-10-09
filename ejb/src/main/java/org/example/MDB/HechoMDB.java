@@ -7,7 +7,6 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TextMessage;
 import jakarta.jms.JMSException;
-import org.example.Services.InterfaceService.IHechoServiceLocal;
 import org.example.Services.InterfaceService.IHechoServiceRemote;
 import org.example.Type.TipoCalificacion;
 import org.example.Type.TipoCategoria;

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Agregar Hecho</title>
+</h:head>
+<h:body>
+    <h:form id="formAgregarHecho">
+        <h1>Agregar Hecho</h1>
+
+        <h:outputLabel for="frase" value="Frase:" />
+        <p:inputText id="frase" value="#{claimBean.hechoResponse.frase}" required="true" /> <br /><br />
+
+        <h:outputLabel for="notasAdicionales" value="Notas Adicionales:" />
+        <p:inputText id="notasAdicionales" value="#{claimBean.hechoResponse.notasAdicionales}" required="true" /> <br /><br />
+
+        <h:outputLabel for="estado" value="Estado:" />
+        <p:inputText id="estado" value="#{claimBean.hechoResponse.estado}" required="true" /> <br /><br />
+
+        <h:outputLabel for="fechaCreacion" value="Fecha de Creación:" />
+        <p:calendar id="fechaCreacion" value="#{claimBean.hechoResponse.fechaCreacion}" pattern="yyyy-MM-dd" showOn="button" required="true" /> <br /><br />
+
+        <h:outputLabel for="areaTematica" value="Área Temática:" />
+        <p:selectOneMenu id="areaTematica" value="#{claimBean.hechoResponse.areaTematica}">
+            <f:selectItem itemValue="POLITICA" itemLabel="Política" />
+            <f:selectItem itemValue="MEDICINA" itemLabel="Medicina" />
+            <f:selectItem itemValue="CIENCIA" itemLabel="Ciencia" />
+            <f:selectItem itemValue="CELEBRIDADES" itemLabel="Celebridades" />
+            <f:selectItem itemValue="ECONOMIA" itemLabel="Economía" />
+            <f:selectItem itemValue="SOCIEDAD" itemLabel="Sociedad" />
+        </p:selectOneMenu> <br /><br />
+
+        <h:outputLabel for="urlFuente" value="URL Fuente:" />
+        <p:inputText id="urlFuente" value="#{claimBean.hechoResponse.urlFuente}" required="true" /> <br /><br />
+
+        <p:commandButton value="Agregar Hecho"
+                         action="#{claimBean.agregarHecho()}"
+                         update="growl"
+                         oncomplete="if(!args.validationFailed){redirect();}" />
+
+        <p:growl id="growl" showDetail="true" life="3000" />
+
+        <h:outputScript>
+            function redirect() {
+                setTimeout(function() {
+                    window.location.href = 'Hechos.xhtml';
+                }, 4000);
+            }
+        </h:outputScript>
+    </h:form>
+</h:body>
+</html>

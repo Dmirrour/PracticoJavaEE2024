@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Visualizar Hecho</title>
+</h:head>
+<body>
+<p:messages id="messages" autoUpdate="true" />
+<h:form id="formVisualizar">
+    <h1 style="text-align: center;">Visualizar Hecho</h1>
+    <p:growl id="growl" showDetail="true" sticky="false" life="3000"/>
+
+    <h:panelGrid columns="2">
+        <h:outputLabel value="ID del Hecho:" />
+        <h:inputText value="#{claimBean.id}" required="true" />
+
+        <p:commandButton value="Buscar" action="#{claimBean.obtenerHecho}" update="@form" oncomplete="PF('growl').renderMessage({'summary':'Información', 'detail':'Hecho encontrado', 'severity':'info'});"/>
+    </h:panelGrid>
+
+    <!-- Detalles del Hecho -->
+    <h:panelGroup rendered="#{not empty claimBean.hechoResponse}">
+        <div>
+            <p:outputLabel for="frase" value="Descripción:" />
+            <p:inputText id="frase" value="#{claimBean.hechoResponse.frase}" readonly="true" />
+        </div>
+        <br/>
+
+        <div>
+            <p:outputLabel for="notas" value="Notas Adicionales:" />
+            <p:inputText id="notas" value="#{claimBean.hechoResponse.notasAdicionales}" readonly="true" />
+        </div>
+        <br/>
+
+        <div>
+            <p:outputLabel for="estado" value="Estado:" />
+            <p:inputText id="estado" value="#{claimBean.hechoResponse.estado}" readonly="true" />
+        </div>
+        <br/>
+
+        <div>
+            <p:outputLabel for="tematica" value="Temática:" />
+            <p:inputText id="tematica" value="#{claimBean.hechoResponse.areaTematica}" readonly="true" />
+        </div>
+        <br/>
+
+        <div>
+            <p:outputLabel for="fechaCreacion" value="Fecha de Creación:" />
+            <p:inputText id="fechaCreacion" value="#{claimBean.formatearFecha(claimBean.hechoResponse.fechaCreacion)}" readonly="true" />
+        </div>
+        <br/>
+
+        <div>
+            <p:outputLabel for="url" value="Fuente:" />
+            <p:inputText id="url" value="#{claimBean.hechoResponse.urlFuente}" readonly="true" />
+        </div>
+        <br/>
+    </h:panelGroup>
+
+    <!-- Tabla de verificaciones -->
+    <h:panelGroup layout="block" rendered="#{not empty claimBean.hechoResponse.verificaciones}">
+        <p:dataTable id="ListaVerificados" value="#{claimBean.hechoResponse.verificaciones}" var="verificacion" paginator="true" rows="5"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageDropdown="true" paginatorPosition="bottom" lazy="false">
+
+            <p:column headerText="Fecha de Inicio de Verificación">
+                <h:outputText value="#{claimBean.formatearFecha(verificacion.fechaComienzoVerificacion)}" />
+            </p:column>
+            <p:column headerText="Fecha de Verificación">
+                <h:outputText value="#{claimBean.formatearFecha(verificacion.fechaFinVerificacion)}" />
+            </p:column>
+            <p:column headerText="Calificación">
+                <h:outputText value="#{verificacion.calificacion}" />
+            </p:column>
+            <p:column headerText="Justificación">
+                <h:outputText value="#{verificacion.justificacion}" />
+            </p:column>
+            <p:column headerText="Publicado">
+                <h:panelGroup>
+                    <h:outputText rendered="#{verificacion.activo}" value="✔️" styleClass="text-success" />
+                    <h:outputText rendered="#{not verificacion.activo}" value="❌" styleClass="text-danger" />
+                </h:panelGroup>
+            </p:column>
+        </p:dataTable>
+    </h:panelGroup>
+</h:form>
+</body>
+</html>
